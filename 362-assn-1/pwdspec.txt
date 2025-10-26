@@ -1,0 +1,73 @@
+# --------------------------------------
+# Credit Card Validation — TSL Spec
+# --------------------------------------
+# Categories define partitions for brand, prefix, length,
+# digit content, and Luhn checksum status.
+# This generates:
+# - Valid combinations for AMEX (length 15)
+# - Valid combinations for VISA & MASTERCARD (length 16)
+# - Single error frames for invalid lengths, prefixes, or formats
+# --------------------------------------
+
+# -----------------
+# Prefix (Card Type)
+# -----------------
+Prefix:
+    3.
+    4.          [property Visa]
+    5.
+    50.
+    51.         [property MasterCard]
+    56.
+    2220.
+    2221.       [property MasterCard]
+    2721.
+    33.
+    34.         [property AMEX]
+    36.
+    37.         [property AMEX]
+    38.
+
+# -----------------
+# Length (digits)
+# Only AMEX = 15, Visa/MasterCard = 16
+# Everything else is an error.
+# -----------------
+Length:
+    0.          [error]
+    14.         [if AMEX]
+    15.         
+    16.         
+    17.         [if MasterCard]
+    17.         [if Visa]
+
+# -----------------
+# Non-digit Characters
+# -----------------
+Non-digits:
+    0.          [property DigitsOnly]  # purely numeric input
+    1.          [error]                # one non-digit (invalid)
+    Many.       [error]                # many non-digits (invalid)
+
+# -----------------
+# Luhn Algorithm
+# Only meaningful if length & prefix are valid.
+# -----------------
+Luhn-Algorithm:
+    Pass.      
+    Fail.       
+
+# -----------------
+# Summary:
+# - Valid test frames:
+#     * AMEX + length 15 + digits only + Luhn pass
+#     * VISA + length 16 + digits only + Luhn pass
+#     * MasterCard + length 16 + digits only + Luhn pass
+#
+# - Error frames:
+#     * Wrong prefix–length combinations (e.g., AMEX 16, VISA 15)
+#     * Out-of-range lengths (14, 17)
+#     * Non-digit inputs
+#     * Luhn fail (only when length & prefix would otherwise be valid)
+# --------------------------------------
+
