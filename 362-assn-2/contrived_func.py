@@ -17,8 +17,7 @@ def contrived_func(val):
         if (a or b) or (b or c):
             pass
         else:
-            pass
-    
+            pass    
     if a and b:
         pass
     else:
